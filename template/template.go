@@ -1,6 +1,6 @@
 package template
 
-import "github.com/namth/go-notify/message"
+import "github.com/namth2302/go-notify/message"
 
 // Template is the common interface implemented by all notification templates.
 type Template interface {

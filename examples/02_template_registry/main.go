@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	notify "github.com/namth/go-notify"
-	"github.com/namth/go-notify/message"
-	"github.com/namth/go-notify/template"
+	notify "github.com/namth2302/go-notify"
+	"github.com/namth2302/go-notify/message"
+	"github.com/namth2302/go-notify/template"
 )
 
 // PaymentEvent is a typed DTO

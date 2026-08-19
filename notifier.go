@@ -9,12 +9,12 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/namth/go-notify/message"
-	"github.com/namth/go-notify/middleware"
-	"github.com/namth/go-notify/provider/gchat"
-	"github.com/namth/go-notify/provider/lark"
-	"github.com/namth/go-notify/router"
-	"github.com/namth/go-notify/template"
+	"github.com/namth2302/go-notify/message"
+	"github.com/namth2302/go-notify/middleware"
+	"github.com/namth2302/go-notify/provider/gchat"
+	"github.com/namth2302/go-notify/provider/lark"
+	"github.com/namth2302/go-notify/router"
+	"github.com/namth2302/go-notify/template"
 )
 
 // Sender is the primary public interface for sending notifications.

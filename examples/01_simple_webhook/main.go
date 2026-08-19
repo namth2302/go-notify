@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"os"
 
-	notify "github.com/namth/go-notify"
-	"github.com/namth/go-notify/message"
-	"github.com/namth/go-notify/provider/gchat"
-	"github.com/namth/go-notify/provider/lark"
+	notify "github.com/namth2302/go-notify"
+	"github.com/namth2302/go-notify/message"
+	"github.com/namth2302/go-notify/provider/gchat"
+	"github.com/namth2302/go-notify/provider/lark"
 )
 
 func main() {

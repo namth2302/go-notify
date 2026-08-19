@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"testing"
 
-	notify "github.com/namth/go-notify"
-	"github.com/namth/go-notify/message"
-	"github.com/namth/go-notify/testutil"
+	notify "github.com/namth2302/go-notify"
+	"github.com/namth2302/go-notify/message"
+	"github.com/namth2302/go-notify/testutil"
 )
 
 // OrderService is an example consumer business service.

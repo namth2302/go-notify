@@ -3,7 +3,7 @@ package template
 import (
 	"fmt"
 
-	"github.com/namth/go-notify/message"
+	"github.com/namth2302/go-notify/message"
 )
 
 // FuncTemplate wraps a Go function that produces a Message from any data.

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/namth/go-notify/message"
+	"github.com/namth2302/go-notify/message"
 )
 
 // Transformer transforms universal message to Lark Interactive Card payload.

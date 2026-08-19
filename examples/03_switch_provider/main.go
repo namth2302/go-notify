@@ -6,9 +6,9 @@ import (
 	"log/slog"
 	"os"
 
-	notify "github.com/namth/go-notify"
-	"github.com/namth/go-notify/message"
-	"github.com/namth/go-notify/middleware"
+	notify "github.com/namth2302/go-notify"
+	"github.com/namth2302/go-notify/message"
+	"github.com/namth2302/go-notify/middleware"
 )
 
 func main() {

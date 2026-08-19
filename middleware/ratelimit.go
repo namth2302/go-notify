@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/namth/go-notify/message"
+	"github.com/namth2302/go-notify/message"
 )
 
 // RateLimiter implements a standard token bucket rate limiter.

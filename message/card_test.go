@@ -3,7 +3,7 @@ package message_test
 import (
 	"testing"
 
-	"github.com/namth/go-notify/message"
+	"github.com/namth2302/go-notify/message"
 )
 
 func TestCardBuilder(t *testing.T) {

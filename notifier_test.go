@@ -9,11 +9,11 @@ import (
 	"testing"
 	"time"
 
-	notify "github.com/namth/go-notify"
-	"github.com/namth/go-notify/message"
-	"github.com/namth/go-notify/middleware"
-	"github.com/namth/go-notify/template"
-	"github.com/namth/go-notify/testutil"
+	notify "github.com/namth2302/go-notify"
+	"github.com/namth2302/go-notify/message"
+	"github.com/namth2302/go-notify/middleware"
+	"github.com/namth2302/go-notify/template"
+	"github.com/namth2302/go-notify/testutil"
 )
 
 func TestNotifierSendWithMiddleware(t *testing.T) {

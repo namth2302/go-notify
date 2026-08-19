@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/namth/go-notify/message"
+	"github.com/namth2302/go-notify/message"
 )
 
 // BaseSender is the minimum interface needed for router dispatching.

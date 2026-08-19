@@ -3,8 +3,8 @@ package notify
 import (
 	"net/http"
 
-	"github.com/namth/go-notify/middleware"
-	"github.com/namth/go-notify/template"
+	"github.com/namth2302/go-notify/middleware"
+	"github.com/namth2302/go-notify/template"
 )
 
 // Option configures the Notifier engine.

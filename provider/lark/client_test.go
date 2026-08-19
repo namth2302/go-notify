@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/namth/go-notify/message"
-	"github.com/namth/go-notify/provider/lark"
+	"github.com/namth2302/go-notify/message"
+	"github.com/namth2302/go-notify/provider/lark"
 )
 
 func TestSigner(t *testing.T) {

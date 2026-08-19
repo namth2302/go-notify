@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/namth/go-notify/message"
-	"github.com/namth/go-notify/provider/gchat"
+	"github.com/namth2302/go-notify/message"
+	"github.com/namth2302/go-notify/provider/gchat"
 )
 
 func TestTransformer(t *testing.T) {

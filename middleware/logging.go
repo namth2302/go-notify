@@ -4,7 +4,7 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/namth/go-notify/message"
+	"github.com/namth2302/go-notify/message"
 )
 
 // Logging returns a middleware that logs notification requests with slog.

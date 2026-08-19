@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/namth/go-notify/message"
+	"github.com/namth2302/go-notify/message"
 )
 
 const ProviderName = "gchat"

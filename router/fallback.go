@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/namth/go-notify/message"
+	"github.com/namth2302/go-notify/message"
 )
 
 // FallbackSender tries primary sender first, and falls back to secondary senders upon failure.

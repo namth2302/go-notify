@@ -6,7 +6,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/namth/go-notify/message"
+	"github.com/namth2302/go-notify/message"
 )
 
 // FieldTemplate represents a template for a Key-Value field.

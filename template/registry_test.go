@@ -4,8 +4,8 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/namth/go-notify/message"
-	"github.com/namth/go-notify/template"
+	"github.com/namth2302/go-notify/message"
+	"github.com/namth2302/go-notify/template"
 )
 
 type DeployAlertData struct {

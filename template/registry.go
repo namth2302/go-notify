@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/namth/go-notify/message"
+	"github.com/namth2302/go-notify/message"
 )
 
 var (

@@ -1,6 +1,6 @@
 # Go Notify (Google Chat & Lark)
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/namth/go-notify.svg)](https://pkg.go.dev/github.com/namth/go-notify)
+[![Go Reference](https://pkg.go.dev/badge/github.com/namth2302/go-notify.svg)](https://pkg.go.dev/github.com/namth2302/go-notify)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-brightgreen.svg)](go.mod)
 
@@ -23,7 +23,7 @@ Thư viện Go chuyên nghiệp dùng chung (Reusable Library) để gửi thôn
 ## 🚀 Cài Đặt (Installation)
 
 ```bash
-go get github.com/namth/go-notify
+go get github.com/namth2302/go-notify
 ```
 
 ---
@@ -39,8 +39,8 @@ import (
     "context"
     "os"
 
-    notify "github.com/namth/go-notify"
-    "github.com/namth/go-notify/message"
+    notify "github.com/namth2302/go-notify"
+    "github.com/namth2302/go-notify/message"
 )
 
 func main() {

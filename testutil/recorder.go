@@ -3,7 +3,7 @@ package testutil
 import (
 	"strings"
 
-	"github.com/namth/go-notify/message"
+	"github.com/namth2302/go-notify/message"
 )
 
 // Recorder provides helper assertions and inspection over a MockSender.

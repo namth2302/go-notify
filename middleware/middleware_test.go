@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/namth/go-notify/message"
-	"github.com/namth/go-notify/middleware"
+	"github.com/namth2302/go-notify/message"
+	"github.com/namth2302/go-notify/middleware"
 )
 
 func TestChainOrder(t *testing.T) {

@@ -3,7 +3,7 @@ package middleware
 import (
 	"context"
 
-	"github.com/namth/go-notify/message"
+	"github.com/namth2302/go-notify/message"
 )
 
 // Handler represents the function signature for sending a notification.

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/namth/go-notify/message"
-	"github.com/namth/go-notify/router"
+	"github.com/namth2302/go-notify/message"
+	"github.com/namth2302/go-notify/router"
 )
 
 type mockBaseSender struct {
