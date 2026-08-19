@@ -1,26 +1,25 @@
-# Go Notify (Google Chat & Lark)
+# go-notify
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/namth2302/go-notify.svg)](https://pkg.go.dev/github.com/namth2302/go-notify)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-brightgreen.svg)](go.mod)
 
-Thư viện Go chuyên nghiệp dùng chung (Reusable Library) để gửi thông báo / cảnh báo đến **Google Chat** và **Lark (Feishu)** qua Webhook.
+A simple, fast, and lightweight Go library to send notifications to **Google Chat** and **Lark (Feishu)**.
 
 ---
 
-## ✨ Điểm Nổi Bật (Key Features)
+## ✨ Features
 
-- **Zero External Dependencies**: 100% Go Standard Library (`net/http`, `crypto/hmac`, `log/slog`, `text/template`). Hoàn toàn không làm phình `go.mod` của các dự án import.
-- **Clean Architecture & Outside-In Design**: Phân tách rõ ràng giữa Domain Models, Adapters, Pipeline Interceptors và Router.
-- **Universal Card DSL**: Viết cấu trúc thông báo 1 lần (`message.NewCard()`), tự động render sang chuẩn **Google Chat CardV2** và **Lark Interactive Card 2.0**.
-- **Template Registry (Gửi Nhanh)**: Hỗ trợ đăng ký Template trước (cả Declarative `{{ .Var }}` và Type-Safe Generics) rồi gửi nhanh chỉ bằng 1 dòng code.
-- **Fast Provider Switch**: Chuyển đổi giữa Google Chat, Lark, Broadcast hoặc Fallback chỉ bằng thay đổi biến môi trường / Config struct.
-- **Resilience & Middleware**: Tích hợp sẵn Retry (Exponential Backoff + Jitter), Token-Bucket Rate Limiter, `log/slog` logging.
-- **Testability First**: Cung cấp sẵn package `testutil` (`MockSender`, `Recorder`) để các service viết Unit Test mà không cần gọi API thật.
+- **Zero Dependencies**: Uses only standard Go packages. Keeps your project small and fast.
+- **One Card for All**: Write a message card once. It works on both Google Chat and Lark automatically.
+- **Fast Switch**: Change between Google Chat and Lark with just one line of configuration.
+- **Template Registry**: Save your message templates and send them quickly with your data.
+- **Auto Retry & Rate Limit**: Retries automatically when network fails and stops sending too fast.
+- **Easy to Test**: Includes mock tools to test your app without sending real messages.
 
 ---
 
-## 🚀 Cài Đặt (Installation)
+## 🚀 Installation
 
 ```bash
 go get github.com/namth2302/go-notify
@@ -28,9 +27,9 @@ go get github.com/namth2302/go-notify
 
 ---
 
-## 📦 Hướng Dẫn Sử Dụng Nhanh (Quickstart)
+## 📖 Quickstart
 
-### 1. Gửi Card Universal (Tự động thích ứng GChat & Lark)
+### Send a Card Message
 
 ```go
 package main
@@ -46,44 +45,51 @@ import (
 func main() {
     ctx := context.Background()
 
-    // Khởi tạo từ biến môi trường (NOTIFY_PROVIDER=gchat hoặc NOTIFY_PROVIDER=lark)
+    // 1. Create a sender from environment variables:
+    // Set NOTIFY_PROVIDER=gchat (or lark) and NOTIFY_ENDPOINT=your_webhook_url
     sender, err := notify.NewFromEnv()
     if err != nil {
         panic(err)
     }
 
-    // Tạo Universal Card
+    // 2. Build your card message
     card := message.NewCard().
-        SetStatus(message.StatusDanger). // Tự động map màu đỏ (Lark/GChat)
-        SetTitle("🚨 [Alert] High Memory Usage").
+        SetStatus(message.StatusDanger). // Shows Red color automatically
+        SetTitle("🚨 High CPU Alert").
         SetSubtitle("Service: payment-api | Env: Production").
         AddSection(
             message.NewSection().
-                AddField("Memory", "94.2%").
+                AddField("CPU Usage", "94%").
                 AddField("Threshold", "85%").
-                AddField("Host", "k8s-node-01"),
+                AddField("Host", "server-01"),
         ).
         AddAction(
-            message.NewButton("Xem Grafana", "https://grafana.internal/d/123"),
-            message.NewButton("Xác nhận", "https://ops.internal/ack").AsPrimary(),
+            message.NewButton("Open Dashboard", "https://grafana.internal/d/123"),
+            message.NewButton("Acknowledge", "https://ops.internal/ack").AsPrimary(),
         )
 
-    // Gửi đi
-    _, _ = sender.Send(ctx, card.Wrap())
+    // 3. Send the message
+    res, err := sender.Send(ctx, card.Wrap())
+    if err != nil {
+        panic(err)
+    }
+    _ = res
 }
 ```
 
 ---
 
-## 📑 Đăng Ký Template & Gửi Nhanh (Template Registry)
+## 📑 Message Templates (Send Fast)
 
-### Cách 1: Declarative Template (Dùng placeholder `{{ .Var }}`)
+You can register a template once when your app starts, and use it anywhere with your data.
+
+### Option 1: Text Template with `{{ .Variables }}`
 
 ```go
-// 1. Đăng ký template lúc khởi động App
-notify.RegisterTemplate("deploy_success", template.NewCardTemplate().
+// 1. Register template at startup
+notify.RegisterTemplate("deploy_done", template.NewCardTemplate().
     SetStatus(message.StatusSuccess).
-    SetTitle("🚀 Deploy Thành Công: {{ .ServiceName }}").
+    SetTitle("🚀 Deploy Success: {{ .Service }}").
     AddSection(
         template.NewSectionTemplate().
             AddField("Version", "{{ .Version }}").
@@ -91,71 +97,99 @@ notify.RegisterTemplate("deploy_success", template.NewCardTemplate().
     ),
 )
 
-// 2. Gửi nhanh bất cứ lúc nào:
-_ = sender.SendTemplate(ctx, "deploy_success", map[string]string{
-    "ServiceName": "order-service",
-    "Version":     "v1.4.2",
-    "Env":         "Production",
+// 2. Send fast by passing your data (map or struct)
+_ = sender.SendTemplate(ctx, "deploy_done", map[string]string{
+    "Service": "order-api",
+    "Version": "v1.2.0",
+    "Env":     "Production",
 })
 ```
 
-### Cách 2: Type-Safe Functional Template (Generics)
+### Option 2: Type-Safe Function Template
 
 ```go
-type AlertEvent struct {
+type ErrorData struct {
     Service string
-    ErrCode int
+    Code    int
     Message string
 }
 
-// 1. Đăng ký Type-Safe template
-notify.RegisterFunc("service_error", func(evt AlertEvent) *message.Card {
+// 1. Register a typed function
+notify.RegisterFunc("error_alert", func(data ErrorData) *message.Card {
     return message.NewCard().
         SetStatus(message.StatusDanger).
-        SetTitle(fmt.Sprintf("❌ Lỗi %d tại %s", evt.ErrCode, evt.Service)).
-        AddSection(message.NewSection().AddField("Chi tiết", evt.Message))
+        SetTitle(fmt.Sprintf("❌ Error in %s", data.Service)).
+        AddSection(
+            message.NewSection().
+                AddField("Code", fmt.Sprintf("%d", data.Code)).
+                AddField("Detail", data.Message),
+        )
 })
 
-// 2. Gửi nhanh với Struct:
-_ = sender.SendTemplate(ctx, "service_error", AlertEvent{
-    Service: "auth-api",
-    ErrCode: 502,
-    Message: "Bad Gateway to Redis",
+// 2. Send fast with your struct
+_ = sender.SendTemplate(ctx, "error_alert", ErrorData{
+    Service: "auth-service",
+    Code:    500,
+    Message: "Database connection failed",
 })
 ```
 
 ---
 
-## 🛡️ Middleware & Resilience (Khả năng chịu lỗi)
+## ⚙️ Configuration & Switching Providers
+
+You can change providers easily using a `Config` struct (from YAML, JSON, or environment variables):
 
 ```go
-sender, err := notify.NewFromConfig(cfg,
+cfg := notify.Config{
+    Provider:  "lark", // or "gchat", "broadcast", "fallback"
+    Endpoint:  "https://open.larksuite.com/open-apis/bot/v2/hook/xxx",
+    Secret:    "your-lark-secret", // optional HMAC secret for Lark
+    Timeout:   "5s",
+    Retries:   3,                  // auto retry 3 times on error
+    RateLimit: 5.0,                // max 5 requests per second
+}
+
+sender, err := notify.NewFromConfig(cfg)
+```
+
+---
+
+## 🛡️ Middlewares (Retry, Rate Limit, Logging)
+
+You can add helper tools to your sender pipeline:
+
+```go
+sender := notify.New(baseSender,
     notify.WithMiddleware(
-        middleware.Logging(slog.Default()), // Log bằng slog chuẩn Go
-        middleware.RateLimit(middleware.NewRateLimiter(5.0, 10)), // 5 req/s, burst 10
-        middleware.Retry(3), // Tự động retry tối đa 3 lần khi gặp 429 hoặc 5xx
+        middleware.Logging(slog.Default()),                       // logs info and errors
+        middleware.RateLimit(middleware.NewRateLimiter(5.0, 10)), // 5 req/s
+        middleware.Retry(3),                                      // retry 3 times
     ),
 )
 ```
 
 ---
 
-## 🔀 Multi-Channel Routing (Broadcast & Fallback)
+## 🔀 Multi-Channel (Broadcast & Fallback)
 
-### Broadcast (Gửi song song nhiều nền tảng)
+### Send to Both Google Chat and Lark (Broadcast)
+
 ```go
 cfg := notify.Config{
     Provider: notify.ProviderBroadcast,
     Children: []notify.Config{
         {Provider: "gchat", Endpoint: "https://chat.googleapis.com/..."},
-        {Provider: "lark", Endpoint: "https://open.larksuite.com/...", Secret: "xxx"},
+        {Provider: "lark", Endpoint: "https://open.larksuite.com/..."},
     },
 }
+
 sender, _ := notify.NewFromConfig(cfg)
-_ = sender.Send(ctx, card.Wrap()) // Gửi đồng thời tới cả GChat và Lark
+_ = sender.Send(ctx, card.Wrap()) // sends to both platforms at the same time
 ```
 
-### Fallback (Tự động chuyển kênh phụ khi kênh chính lỗi)
+### Fallback to Secondary Channel on Error
+
 ```go
 cfg := notify.Config{
     Provider: notify.ProviderFallback,
@@ -164,79 +198,62 @@ cfg := notify.Config{
         {Provider: "gchat", Endpoint: "https://secondary-gchat-url"},
     },
 }
+
 sender, _ := notify.NewFromConfig(cfg)
+_ = sender.Send(ctx, card.Wrap()) // tries Lark first; if it fails, sends to GChat
 ```
 
 ---
 
-## 🧪 Viết Unit Test Trong Dự Án Của Bạn (Testability)
+## 🧪 Unit Testing in Your Application
 
-Thư viện cung cấp sẵn `testutil.MockSender` và `testutil.Recorder` để bạn test nghiệp vụ mà không gửi HTTP thật:
+You do not need to send real webhooks in your unit tests. Use `testutil.MockSender`:
 
 ```go
-func TestOrderService(t *testing.T) {
+func TestMyService(t *testing.T) {
     mock := testutil.NewMockSender()
     recorder := testutil.NewRecorder(mock)
 
-    service := NewOrderService(mock) // Inject mock vào service
-    err := service.CancelOrder(context.Background(), "ORD-123", "Khách hủy")
+    // Pass mock to your service
+    myService := NewOrderService(mock)
+    err := myService.CancelOrder(context.Background(), "ORD-123")
 
-    assert.NoError(t, err)
-    assert.Equal(t, 1, mock.SentCount())
-    assert.True(t, recorder.HasTitle("❌ Đơn hàng đã hủy: ORD-123"))
-    assert.True(t, recorder.HasStatus(message.StatusDanger))
+    // Check the results
+    if err != nil {
+        t.Fatal(err)
+    }
+    if mock.SentCount() != 1 {
+        t.Errorf("expected 1 message, got %d", mock.SentCount())
+    }
+    if !recorder.HasTitle("Order Cancelled") {
+        t.Errorf("title does not match")
+    }
 }
 ```
 
 ---
 
-## 📂 Cấu Trúc Dự Án (Package Layout)
+## 📁 Project Structure
 
 ```
 go-notify/
-├── notifier.go                 # Facade chính, Sender interface, Factory New()
-├── options.go                  # Functional Options cấu hình chung
-├── config.go                   # Config struct (hỗ trợ JSON/YAML/Viper)
+├── notifier.go                 # Main entry, Sender interface, New()
+├── options.go                  # Configuration options
+├── config.go                   # Config struct (JSON / YAML / Viper)
 │
-├── message/                    # DOMAIN LAYER (Zero-dependency)
-│   ├── message.go              # Message interface & Types (Card, Text, Raw)
-│   ├── card.go                 # Card, Section, Field, Image struct & builder
-│   ├── action.go               # Button, Action definitions
-│   ├── status.go               # Status enum & icon helpers
-│   └── result.go               # Send Result metadata
-│
-├── template/                   # TEMPLATE REGISTRY
-│   ├── template.go             # Template interface
-│   ├── declarative.go          # Declarative Card template (Go text/template)
-│   ├── functional.go           # Generic type-safe functional template
-│   └── registry.go             # Thread-safe template storage (sync.RWMutex)
-│
-├── provider/                   # ADAPTER LAYER
-│   ├── gchat/                  # Google Chat Webhook (CardV2 serializer)
-│   └── lark/                   # Lark / Feishu Webhook (Card 2.0 + HMAC Signer)
-│
-├── middleware/                 # INTERCEPTORS LAYER
-│   ├── retry.go                # Exponential backoff retry with jitter
-│   ├── ratelimit.go            # Token bucket rate limiter
-│   └── logging.go              # slog structured logging
-│
-├── router/                     # MULTI-PROVIDER ROUTING
-│   ├── broadcast.go            # Concurrent multi-send
-│   └── fallback.go             # Sequential fallback
-│
-├── testutil/                   # TESTING SUITE CHO DỰ ÁN IMPORT
-│   ├── mock_sender.go          # Thread-safe in-memory MockSender
-│   └── recorder.go             # Helper assertions (HasTitle, HasStatus, ...)
-│
-└── examples/                   # SOURCE CODE MẪU
-    ├── 01_simple_webhook/
-    ├── 02_template_registry/
-    ├── 03_switch_provider/
-    └── 04_unit_test_mocking/
+├── message/                    # Message models (Card, Section, Button, Status)
+├── template/                   # Template registry and render engine
+├── provider/
+│   ├── gchat/                  # Google Chat webhook adapter
+│   └── lark/                   # Lark / Feishu webhook adapter
+├── middleware/                 # Retry, Rate Limiter, and Logging
+├── router/                     # Broadcast and Fallback routing
+├── testutil/                   # MockSender and Recorder for unit tests
+└── examples/                   # Working code examples
 ```
 
 ---
 
-## 📄 Giấy Phép (License)
+## 📄 License
 
-MIT License.
+[MIT License](LICENSE)
